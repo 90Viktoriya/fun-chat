@@ -1,0 +1,28 @@
+
+:root {
+  --dark: #131410;
+  --light: #F5F6ED;
+  --dark-pink: #783e5f;
+  --pink: #fe51fb;
+  --light-pink: #fcd9df;
+  --error: #85456a;
+}
+* {
+  margin: 0;
+}
+html {
+  height: 100%;
+}
+body {
+  width: 100%;
+  min-height: 100%;
+  background-image: url(./img/background.jpeg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.page_wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

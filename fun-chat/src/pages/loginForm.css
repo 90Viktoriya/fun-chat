@@ -1,0 +1,72 @@
+.loginForm_wrapper{
+  align-items: center;
+  border: 1px solid;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 2%;
+  position: absolute;
+  top: 10vh;
+  width: 70%;
+  font-size: 28px;
+}
+.loginForm_header{
+  font-size: 1.5em;
+}
+
+.loginForm_input-block{
+  width: 70%;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.loginForm_input-wrapper{
+  width: 60%;
+}
+.loginForm_input{
+  width: 100%;
+  font-size: 1rem;
+}
+.loginForm_info{
+  font-size: 20px;
+  color: var(--error);
+}
+.loginForm_label{
+  width: 40%;
+  font-size: 1em;
+}
+.loginForm_button{
+  width: 40%;
+  font-size: 1em;
+  margin-top: 1.2em;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--pink);
+  border: 2px outset var(--dark);
+  border-radius: 15px;
+  cursor: pointer;
+}
+form:invalid .loginForm_button{
+  pointer-events: none;
+  opacity: 70%;
+  color: var(--light-brown);
+}
+.loginForm_input-invalid{
+  border: 2px solid var(--error);
+}
+
+@media all and (max-width: 880px) {
+  .loginForm_wrapper{
+    width: 85%;
+  }
+}
+@media all and (max-width: 550px) {
+  .loginForm_wrapper{
+    font-size: 22px;
+  }
+}
