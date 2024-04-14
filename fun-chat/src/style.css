@@ -6,6 +6,8 @@
   --pink: #fe51fb;
   --light-pink: #fcd9df;
   --error: #85456a;
+  --active: #056e0c;
+  --inactive: #8d0303;
 }
 * {
   margin: 0;

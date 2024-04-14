@@ -11,6 +11,8 @@ import './page.css';
 class PageController {
   currentPage: LoginForm | MainPage;
 
+  mainPage: MainPage | null;
+
   nextPage: PageType;
 
   connection;
@@ -22,9 +24,11 @@ class PageController {
   constructor() {
     this.pageWrapper = new BaseComponent({ className: CLASS_NAMES.wrapper });
     this.connection = connection;
+    this.mainPage = null;
     if (store.checkUserData()) {
       this.user = store.getUserData();
       this.currentPage = new MainPage(() => this.logoutUser());
+      this.mainPage = this.currentPage;
     } else {
       this.user = { name: '', password: '' };
       this.currentPage = new LoginForm((user: UserData) => this.loginUser(user));
@@ -52,6 +56,7 @@ class PageController {
     }
     if (this.nextPage === 'main') {
       this.currentPage = new MainPage(() => this.logoutUser());
+      this.mainPage = this.currentPage;
     }
     this.pageWrapper.append(this.currentPage.getPage());
   }
@@ -81,6 +86,9 @@ class PageController {
         store.clearUserData();
       } else {
         store.setUserData(this.user);
+        this.connection.getUsers((status: string, result?: string) =>
+          this.mainPage?.loadUserList(status, result ?? '')
+        );
       }
       this.changePage();
     } else {
@@ -109,6 +117,8 @@ class PageController {
     }
     if (page === 'main') {
       this.currentPage = new MainPage(() => this.logoutUser());
+      this.mainPage = this.currentPage;
+      this.connection.getUsers((status: string, result?: string) => this.mainPage?.loadUserList(status, result ?? ''));
     }
     this.pageWrapper.append(this.currentPage.getPage());
   }

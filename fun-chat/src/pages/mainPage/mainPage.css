@@ -3,11 +3,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: row;
+  flex-direction: column;
   font-size: 24px;
   margin: 30px 0;
   padding: 30px;
-  
 /*
   width: 70%;
   background-color: var(--light-brown);
@@ -15,26 +14,42 @@
   position: relative;*/
 }
 .mainPage_header {
+  width: 70%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  border: 1px solid var(--dark-pink);
+  border-radius: 20px;
+  margin: 0 auto;
+  padding: 2%;
+}
+.mainPage_header-title {
+  align-self: center;
 }
 .mainPage_header-userData {
+  width: 100%;
   display: flex;
   flex-direction: row;
+  align-self: flex-start;
+  gap: 10px;
 }
 .mainPage_button {
   width: 4em;
   font-size: 1em;
-  margin-top: 1.2em;
   display: flex;
   text-align: center;
-  align-items: center;
+  align-self: flex-end;
   justify-content: center;
   background-color: var(--pink);
   border: 2px outset var(--dark);
   border-radius: 15px;
   cursor: pointer;
+}
+.userList_user {
+  color: var(--inactive);
+}
+.userList_user-logined {
+  color: var(--active);
 }
 
 .mainPage_footer {

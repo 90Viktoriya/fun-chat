@@ -1,6 +1,6 @@
 import type { UserData } from '../store/store.types';
 import SERVER from './websocket.constants';
-import type { Message, WaitingMessages } from './websocket.type';
+import type { Message, PayloadRequest, WaitingMessages, ReturnResult } from './websocket.type';
 
 class Websocket {
   connection: WebSocket;
@@ -32,7 +32,7 @@ class Websocket {
         if (data.type === 'ERROR') {
           waiter.callback(data.payload.error);
         } else {
-          waiter.callback('OK');
+          waiter.callback('OK', JSON.stringify(data.payload));
         }
       } else {
         this.messages.push(data);
@@ -40,7 +40,7 @@ class Websocket {
     };
   }
 
-  private waitResult(id: string, returnMessage: (message: string) => void) {
+  private waitResult(id: string, returnMessage: ReturnResult) {
     this.waiting.push({ id, callback: returnMessage });
   }
 
@@ -49,28 +49,40 @@ class Websocket {
     return id;
   }
 
-  private sendMessage(type: string, user: UserData, returnMessage: (message: string) => void) {
+  private sendMessage(type: string, payload: PayloadRequest, returnMessage: ReturnResult) {
     const id = Websocket.generateID();
     const msg = {
       id,
       type,
-      payload: {
-        user: {
-          login: user.name,
-          password: user.password
-        }
-      }
+      payload
     };
     this.connection.send(JSON.stringify(msg));
     this.waitResult(id, returnMessage);
   }
 
-  public logoutUser(user: UserData, returnMessage: (message: string) => void) {
-    this.sendMessage('USER_LOGOUT', user, returnMessage);
+  public logoutUser(user: UserData, returnMessage: ReturnResult) {
+    const payload = {
+      user: {
+        login: user.name,
+        password: user.password
+      }
+    };
+    this.sendMessage('USER_LOGOUT', payload, returnMessage);
   }
 
-  public loginUser(user: UserData, returnMessage: (message: string) => void) {
-    this.sendMessage('USER_LOGIN', user, returnMessage);
+  public loginUser(user: UserData, returnMessage: ReturnResult) {
+    const payload = {
+      user: {
+        login: user.name,
+        password: user.password
+      }
+    };
+    this.sendMessage('USER_LOGIN', payload, returnMessage);
+  }
+
+  public getUsers(returnUsers: ReturnResult) {
+    this.sendMessage('USER_ACTIVE', null, returnUsers);
+    this.sendMessage('USER_INACTIVE', null, returnUsers);
   }
 }
 
