@@ -4,24 +4,9 @@ export const LOGIN_FORMS = [
 ];
 
 export const PAGES_CLASS_NAMES = {
-  wrapper: 'page_wrapper'
-};
-
-export const MAIN_PAGE_CLASS_NAMES = {
-  wrapper: 'mainPage_wrapper',
-  header: 'mainPage_header',
-  userData: 'mainPage_header-userData',
-  title: 'mainPage_header-title',
-  label: 'mainPage_label',
-  button: 'mainPage_button',
-  footer: 'mainPage_footer',
-  github: 'mainPage_github',
-  githubIcon: 'mainPage_github-icon',
-  githubLink: 'mainPage_github-link',
-  year: 'mainPage_year',
-  logo: 'mainPage_logo',
-  logoIcon: 'mainPage_logo-icon',
-  logoLink: 'mainPage_logo-link'
+  wrapper: 'page_wrapper',
+  messageWrapper: 'message_wrapper',
+  message: 'message_data'
 };
 
 export const LOGIN_FORMS_CLASS_NAMES = {

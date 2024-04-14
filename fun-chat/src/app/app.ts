@@ -1,16 +1,15 @@
-import pageWrapper from '../pages/page';
-import BaseComponent from '../components/baseComponent';
+import PageController from '../pages/page';
 
 class App {
   constructor(
-    private wrapper: BaseComponent,
+    private pageController: PageController,
     private root: HTMLElement
   ) {}
 
   public start(): void {
-    this.root.append(this.wrapper.getNode());
+    this.root.append(this.pageController.getPage().getNode());
   }
 }
 
-const app = new App(pageWrapper, document.body);
+const app = new App(new PageController(), document.body);
 app.start();

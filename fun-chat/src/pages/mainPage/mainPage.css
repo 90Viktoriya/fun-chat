@@ -19,9 +19,22 @@
   flex-direction: column;
   justify-content: space-between;
 }
-.mainPage_header-userData{
+.mainPage_header-userData {
   display: flex;
   flex-direction: row;
+}
+.mainPage_button {
+  width: 4em;
+  font-size: 1em;
+  margin-top: 1.2em;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--pink);
+  border: 2px outset var(--dark);
+  border-radius: 15px;
+  cursor: pointer;
 }
 
 .mainPage_footer {

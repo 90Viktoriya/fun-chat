@@ -1,0 +1,38 @@
+.message_wrapper {
+  display: flex;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.8);
+  font-size: 32px;
+}
+.message_data {
+  display:flex;
+  flex-direction: column;
+  padding: 40px;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  background: var(--light-pink);
+  z-index: 5;   
+  border-radius: 20px;
+  text-align: center;
+}
+.page_button {
+  width: 4em;
+  font-size: 1em;
+  margin-top: 1.2em;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--pink);
+  border: 2px outset var(--dark);
+  border-radius: 15px;
+  cursor: pointer;
+}
