@@ -1,0 +1,51 @@
+.aboutPage_wrapper {
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 24px;
+  margin: 30px 0;
+  padding: 30px;
+  border: 1px solid var(--dark-pink);
+  border-radius: 20px;
+}
+
+.aboutPage_header {
+  text-align: center;
+  font-size: 1.5em;
+}
+
+.aboutPage_data {
+  width: 70%;
+  text-align: center;
+  margin: 1.5em 0;
+}
+.aboutPage_github-link {
+  text-decoration: none;
+}
+
+.aboutPage_button {
+  width: 4em;
+  font-size: 1em;
+  display: flex;
+  margin-top: 1.5em;
+  text-align: center;
+  justify-content: center;
+  background-color: var(--pink);
+  border: 2px outset var(--dark);
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+@media all and (max-width: 850px) {
+  .aboutPage_data{
+    width: 85%;
+  }
+}
+
+@media all and (max-width: 600px) {
+  .aboutPage_wrapper{
+    font-size: 20px;
+  }
+}

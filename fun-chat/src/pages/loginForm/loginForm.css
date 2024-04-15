@@ -51,9 +51,10 @@
   border-radius: 15px;
   cursor: pointer;
 }
-form:invalid .loginForm_button{
+
+form:invalid .loginForm_button-login{
   pointer-events: none;
-  opacity: 70%;
+  opacity: 60%;
   color: var(--light-brown);
 }
 .loginForm_input-invalid{

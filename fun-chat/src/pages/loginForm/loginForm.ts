@@ -1,8 +1,8 @@
-import type { UserData } from '../store/store.types';
-import BaseComponent from '../components/baseComponent';
+import type { UserData } from '../../store/store.types';
+import BaseComponent from '../../components/baseComponent';
 import './loginForm.css';
-import { LOGIN_FORMS_CLASS_NAMES as CLASS_NAMES, LOGIN_FORMS } from './pages.constants';
-import type { PageType } from './pages.types';
+import { LOGIN_FORMS_CLASS_NAMES as CLASS_NAMES, LOGIN_FORMS } from './loginForm.constants';
+import type { PageType } from '../pages.types';
 
 function checkValues(value: string, child: BaseComponent, checkFirst: boolean, length: number | undefined) {
   const upperFirst = /^[A-Z]{1}/gm;
@@ -42,7 +42,7 @@ class LoginForm {
 
   form;
 
-  constructor(loginUser: (user: UserData) => void) {
+  constructor(loginUser: (user: UserData) => void, showAbout: () => void) {
     this.inputComponents = LOGIN_FORMS.map(
       (component) =>
         new BaseComponent({
@@ -66,14 +66,20 @@ class LoginForm {
       new BaseComponent({ tag: 'h1', textContent: 'Please login!', className: CLASS_NAMES.header }),
       ...this.createInputBlocks(),
       new BaseComponent({
-        tag: 'div',
         textContent: 'Login',
-        className: 'loginForm_button',
+        className: `${CLASS_NAMES.button} ${CLASS_NAMES.loginButton}`,
         onclick: () => {
           const user = this.checkInputs();
           if (user) {
             loginUser(user);
           }
+        }
+      }),
+      new BaseComponent({
+        textContent: 'About',
+        className: CLASS_NAMES.button,
+        onclick: () => {
+          showAbout();
         }
       })
     );

@@ -5,16 +5,11 @@
   align-items: center;
   flex-direction: column;
   font-size: 24px;
-  margin: 30px 0;
+  margin: 30px 30px;
   padding: 30px;
-/*
-  width: 70%;
-  background-color: var(--light-brown);
-  border-radius: 100px;
-  position: relative;*/
 }
 .mainPage_header {
-  width: 70%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -45,6 +40,18 @@
   border-radius: 15px;
   cursor: pointer;
 }
+.mainPart_wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.dialog_wrapper {
+  width: 70%;
+}
+.userList_wrapper {
+  width: 30%;
+  padding: 2%;
+}
 .userList_user {
   color: var(--inactive);
 }
@@ -73,4 +80,19 @@
   width: 40px;
   height: 40px;
   background-image: src('./img/github-icon.svg');
+}
+
+@media all and (max-width: 850px) {
+  .mainPage_wrapper{
+    width: 90%;
+  }
+}
+@media all and (max-width: 550px) {
+  .mainPage_footer{
+    width: 90%;
+    max-width: 90%;
+  }
+  .mainPage_wrapper{
+    font-size: 20px;
+  }
 }
