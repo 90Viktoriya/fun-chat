@@ -5,24 +5,37 @@ import type { Message, PayloadRequest, WaitingMessages, ReturnResult } from './w
 class Websocket {
   connection: WebSocket;
 
+  errorCallback;
+
   messages: Message[];
 
   waiting: WaitingMessages[];
 
   public openStatus;
 
-  constructor() {
+  constructor(errorCallback: () => void) {
+    this.errorCallback = errorCallback;
     this.connection = new WebSocket(SERVER);
     this.openStatus = false;
     this.messages = [];
     this.waiting = [];
+    this.addListeners();
+  }
+
+  private addListeners() {
     this.connection.onopen = () => {
       this.openStatus = true;
       console.log('WebSocket connection established.');
     };
 
     this.connection.onerror = (error) => {
+      this.openStatus = false;
+      this.errorCallback();
       console.error('WebSocket error:', error);
+    };
+
+    this.connection.onclose = () => {
+      this.reconnect();
     };
 
     this.connection.onmessage = (event) => {
@@ -47,6 +60,14 @@ class Websocket {
   static generateID() {
     const id = crypto.randomUUID();
     return id;
+  }
+
+  private reconnect() {
+    this.connection = new WebSocket(SERVER);
+    this.openStatus = false;
+    this.messages = [];
+    this.waiting = [];
+    this.addListeners();
   }
 
   private sendMessage(type: string, payload: PayloadRequest, returnMessage: ReturnResult) {
@@ -86,6 +107,4 @@ class Websocket {
   }
 }
 
-const connection = new Websocket();
-
-export default connection;
+export default Websocket;
