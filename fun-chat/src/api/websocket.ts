@@ -25,13 +25,10 @@ class Websocket {
   private addListeners() {
     this.connection.onopen = () => {
       this.openStatus = true;
-      console.log('WebSocket connection established.');
     };
 
-    this.connection.onerror = (error) => {
-      this.openStatus = false;
+    this.connection.onerror = () => {
       this.errorCallback();
-      console.error('WebSocket error:', error);
     };
 
     this.connection.onclose = () => {
@@ -63,14 +60,19 @@ class Websocket {
   }
 
   private reconnect() {
-    this.connection = new WebSocket(SERVER);
-    this.openStatus = false;
-    this.messages = [];
-    this.waiting = [];
-    this.addListeners();
+    setTimeout(() => {
+      this.connection = new WebSocket(SERVER);
+      this.openStatus = false;
+      this.messages = [];
+      this.waiting = [];
+      this.addListeners();
+    }, 1000);
   }
 
   private sendMessage(type: string, payload: PayloadRequest, returnMessage: ReturnResult) {
+    if (!this.openStatus) {
+      return;
+    }
     const id = Websocket.generateID();
     const msg = {
       id,

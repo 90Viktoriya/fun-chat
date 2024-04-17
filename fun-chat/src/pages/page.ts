@@ -23,6 +23,8 @@ class PageController {
 
   connection;
 
+  waitFlag;
+
   pageWrapper;
 
   user: UserData;
@@ -76,6 +78,7 @@ class PageController {
     this.nextPageType = this.currentPage.getPageType();
     this.aboutPage = new AboutPage(() => this.closeAbout());
     this.router = new Router(this.routes, (url: string) => this.checkRedirection(url));
+    this.waitFlag = false;
     this.waitConnection();
   }
 
@@ -93,18 +96,27 @@ class PageController {
   }
 
   public waitConnection() {
-    const message = new BaseComponent({ tag: 'h1', textContent: 'I try to connect to server' });
-    this.pageWrapper.append(message);
+    if (this.waitFlag) {
+      return;
+    }
+    this.waitFlag = true;
+    const message = new BaseComponent(
+      { className: CLASS_NAMES.messageWrapper },
+      new BaseComponent({ textContent: 'I try to connect to server', className: CLASS_NAMES.message })
+    );
+    document.body.append(message.getNode());
     const timer = setInterval(() => {
       if (this.connection.openStatus) {
         message.node.remove();
         if (this.currentPageType === 'main') {
           this.loginUser(store.getUserData());
+        } else {
+          this.loadPage(this.currentPageType);
         }
-        this.loadPage(this.currentPageType);
+        this.waitFlag = false;
         clearInterval(timer);
       }
-    }, 0);
+    }, 1000);
   }
 
   public showErrorPage() {
