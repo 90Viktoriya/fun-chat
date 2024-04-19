@@ -1,11 +1,15 @@
 import type { UserData } from '../store/store.types';
 import SERVER from './websocket.constants';
-import type { Message, PayloadRequest, WaitingMessages, ReturnResult } from './websocket.type';
+import type { Message, PayloadRequest, WaitingMessages, ReturnResult, UserResponse, Callbacks } from './websocket.type';
 
 class Websocket {
   connection: WebSocket;
 
   errorCallback;
+
+  loginLogoutCallback: (user: UserResponse) => void;
+
+  returnMessages: (messages: string) => void;
 
   messages: Message[];
 
@@ -15,11 +19,22 @@ class Websocket {
 
   constructor(errorCallback: () => void) {
     this.errorCallback = errorCallback;
+    this.loginLogoutCallback = () => {};
+    this.returnMessages = () => {};
     this.connection = new WebSocket(SERVER);
     this.openStatus = false;
     this.messages = [];
     this.waiting = [];
     this.addListeners();
+  }
+
+  private processMessage(data: Message) {
+    if (data.type === 'USER_EXTERNAL_LOGOUT' || data.type === 'USER_EXTERNAL_LOGIN') {
+      if (data.payload.user) {
+        this.loginLogoutCallback(data.payload.user);
+      }
+    }
+    this.messages.push(data);
   }
 
   private addListeners() {
@@ -42,12 +57,20 @@ class Websocket {
         if (data.type === 'ERROR') {
           waiter.callback(data.payload.error);
         } else {
+          if (data.type === 'USER_ACTIVE' || data.type === 'USER_INACTIVE') {
+            this.getMessages(data.payload.users);
+          }
           waiter.callback('OK', JSON.stringify(data.payload));
         }
       } else {
-        this.messages.push(data);
+        this.processMessage(data);
       }
     };
+  }
+
+  public setCallbacks(callbacks: Callbacks) {
+    this.loginLogoutCallback = callbacks.loginLogoutCallback;
+    this.returnMessages = callbacks.returnMessages;
   }
 
   private waitResult(id: string, returnMessage: ReturnResult) {
@@ -106,6 +129,17 @@ class Websocket {
   public getUsers(returnUsers: ReturnResult) {
     this.sendMessage('USER_ACTIVE', null, returnUsers);
     this.sendMessage('USER_INACTIVE', null, returnUsers);
+  }
+
+  public getMessages(users: UserResponse[]) {
+    users.forEach((item) => {
+      const payload = {
+        user: {
+          login: item.login
+        }
+      };
+      this.sendMessage('MSG_FROM_USER', payload, this.returnMessages);
+    });
   }
 }
 

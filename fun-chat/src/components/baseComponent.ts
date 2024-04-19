@@ -64,6 +64,10 @@ class BaseComponent {
     this.node.classList.remove(className);
   }
 
+  public getChildren() {
+    return this.node.children;
+  }
+
   public getNode() {
     return this.node;
   }

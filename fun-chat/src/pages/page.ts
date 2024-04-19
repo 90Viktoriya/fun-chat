@@ -139,9 +139,6 @@ class PageController {
   }
 
   private changePage() {
-    if (this.nextPageType === this.currentPage.getPageType()) {
-      return;
-    }
     this.currentPageType = this.nextPageType;
     this.router.navigate(this.nextPageType);
   }
@@ -214,6 +211,10 @@ class PageController {
         this.connection.getUsers((status: string, result?: string) =>
           this.mainPage?.loadUserList(status, result ?? '')
         );
+        this.connection.setCallbacks({
+          loginLogoutCallback: this.mainPage.updateUserList.bind(this.mainPage),
+          returnMessages: this.mainPage.processMessages.bind(this.mainPage)
+        });
       }
     }
     this.pageWrapper.append(this.currentPage.getPage());

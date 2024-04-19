@@ -25,6 +25,7 @@ body {
 }
 .page_wrapper {
   width: 100%;
+  height: 100svh;
   display: flex;
   justify-content: center;
 }

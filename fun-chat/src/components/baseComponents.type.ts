@@ -4,8 +4,10 @@ export type Props = {
   tag?: string;
   type?: string;
   id?: string;
+  placeholder?: string;
   onclick?(e?: MouseEvent): void;
   onkeydown?(e?: KeyboardEvent): void;
+  onkeyup?(): void;
   required?: string;
   src?: string;
   alt?: string;

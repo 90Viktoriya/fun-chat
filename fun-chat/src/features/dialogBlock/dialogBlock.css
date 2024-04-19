@@ -1,0 +1,41 @@
+.dialog_wrapper {
+  width: 70%;
+  height: 100%;
+}
+.dialog_header {
+  height: 10%;
+}
+.dialog_mainPart {
+  height: 80%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
+.dialog_sendPart {
+  width: 100%;
+  height: 10%;
+  display: flex;
+  flex-direction: row;
+}
+.dialog_message-input {
+  margin: 1%;
+  width: 70%;
+}
+.dialog_button {
+  width: 28%;
+  font-size: 1em;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--pink);
+  border: 2px outset var(--dark);
+  border-radius: 15px;
+  cursor: pointer;
+}
+form:invalid .dialog_button{
+  pointer-events: none;
+  opacity: 60%;
+  color: var(--light-brown);
+}
+

@@ -5,7 +5,7 @@ export type UserResponse = {
 
 export type UserRequest = {
   login: string;
-  password: string;
+  password?: string;
 };
 
 export type ReturnResult = (message: string, result?: string) => void;
@@ -13,6 +13,11 @@ export type ReturnResult = (message: string, result?: string) => void;
 export type WaitingMessages = {
   id: string;
   callback: ReturnResult;
+};
+
+export type Callbacks = {
+  loginLogoutCallback: (user: UserResponse) => void;
+  returnMessages: (messages: string) => void;
 };
 
 export type PayloadResponse = {
