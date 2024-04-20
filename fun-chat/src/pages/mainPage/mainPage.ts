@@ -4,8 +4,9 @@ import FOOTER from './footerBlock';
 import store from '../../store/store';
 import CLASS_NAMES from './mainPage.constants';
 import type { PageType } from '../pages.types';
-import type { UserResponse } from '../../api/websocket.type';
+import type { MessageResponse, UserResponse } from '../../api/websocket.type';
 import Dialog from '../../features/dialogBlock/dialogBlock';
+import type Websocket from '../../api/websocket';
 
 class MainPage {
   mainPage;
@@ -20,7 +21,7 @@ class MainPage {
 
   headerBlock;
 
-  constructor(logoutUser: () => void, showAbout: () => void) {
+  constructor(logoutUser: () => void, showAbout: () => void, connection: Websocket) {
     this.headerBlock = new BaseComponent(
       { tag: 'section', className: CLASS_NAMES.header },
       new BaseComponent({ textContent: 'FUN CHAT', className: CLASS_NAMES.title }),
@@ -59,7 +60,7 @@ class MainPage {
       this.searchInput,
       this.userList
     );
-    this.dialog = new Dialog();
+    this.dialog = new Dialog(store.getUserData().name, connection);
     this.mainPage = new BaseComponent(
       { tag: 'div', className: CLASS_NAMES.wrapper },
       this.headerBlock,
@@ -70,6 +71,7 @@ class MainPage {
 
   private addUser(user: UserResponse) {
     let className = CLASS_NAMES.userListUser;
+    this.dialog.setStatus(user.login, user.isLogined);
     if (user.isLogined) {
       className += ` ${CLASS_NAMES.userListLogined}`;
     }
@@ -78,6 +80,7 @@ class MainPage {
         tag: 'li',
         id: user.login,
         className,
+        isLogined: user.isLogined,
         textContent: `● ${user.login}`,
         onclick: (event) => {
           if (event?.currentTarget instanceof HTMLElement) {
@@ -88,9 +91,40 @@ class MainPage {
     );
   }
 
-  public processMessages(message: string) {
+  private setUnreadMessage(login: string, count: number) {
+    const user = this.userList.getChildrenById(login);
+    console.log(user instanceof BaseComponent);
+    user?.append(
+      new BaseComponent({
+        className: CLASS_NAMES.unreadCount,
+        tag: 'label',
+        textContent: `${count}`
+      }).getNode()
+    );
+  }
+
+  public changeUnreadMessage(login: string, count: number) {
+    const user = this.userList.getChildrenById(login);
+    if (user?.children.length) {
+      if (user?.children.length > 1) {
+        user?.lastChild?.remove();
+      }
+    }
+    if (count > 0) {
+      user?.append(new BaseComponent({ textContent: `${count}` }).getNode());
+    }
+  }
+
+  public processMessage(message: MessageResponse) {
     console.log(message);
-    console.log(this.userList);
+    this.dialog.getMessage(message);
+  }
+
+  public processMessages(messages: MessageResponse[]) {
+    const unreadMessage = this.dialog.getMessages(messages);
+    if (unreadMessage.count > 0) {
+      this.setUnreadMessage(unreadMessage.login, unreadMessage.count);
+    }
   }
 
   public filterUserList() {
@@ -111,6 +145,7 @@ class MainPage {
   public updateUserList(user: UserResponse) {
     const userItem = document.getElementById(user.login);
     if (userItem) {
+      this.dialog.updateStatus(user.login, user.isLogined);
       if (user.isLogined) {
         userItem.classList.add(CLASS_NAMES.userListLogined);
       } else {
@@ -121,16 +156,14 @@ class MainPage {
     }
   }
 
-  public loadUserList(status: string, users: string) {
-    if (status === 'OK') {
-      const list = JSON.parse(users);
-      list.users.forEach((element: UserResponse) => {
-        if (element.login === store.getUserData().name) {
-          return;
-        }
-        this.addUser(element);
-      });
-    }
+  public loadUserList(users: string) {
+    const list = JSON.parse(users);
+    list.users.forEach((element: UserResponse) => {
+      if (element.login === store.getUserData().name) {
+        return;
+      }
+      this.addUser(element);
+    });
   }
 
   public getPage() {

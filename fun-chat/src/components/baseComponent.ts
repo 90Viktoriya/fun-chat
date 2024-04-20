@@ -64,6 +64,20 @@ class BaseComponent {
     this.node.classList.remove(className);
   }
 
+  public getLastChildren() {
+    return this.node.lastElementChild;
+  }
+
+  /*  public removeLastChildren() {
+    if (this.node.children.length > 1) {
+      this.node.lastChild?.remove();
+    }
+  } */
+
+  public getChildrenById(id: string) {
+    return this.node.children.namedItem(id);
+  }
+
   public getChildren() {
     return this.node.children;
   }

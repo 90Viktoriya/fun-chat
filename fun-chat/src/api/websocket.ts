@@ -1,6 +1,15 @@
 import type { UserData } from '../store/store.types';
 import SERVER from './websocket.constants';
-import type { Message, PayloadRequest, WaitingMessages, ReturnResult, UserResponse, Callbacks } from './websocket.type';
+import type {
+  Message,
+  PayloadRequest,
+  WaitingMessages,
+  ReturnResult,
+  UserResponse,
+  Callbacks,
+  ReturnMessage,
+  ReturnMessages
+} from './websocket.type';
 
 class Websocket {
   connection: WebSocket;
@@ -9,7 +18,9 @@ class Websocket {
 
   loginLogoutCallback: (user: UserResponse) => void;
 
-  returnMessages: (messages: string) => void;
+  returnMessages: ReturnMessages;
+
+  returnMessage: ReturnMessage;
 
   messages: Message[];
 
@@ -21,6 +32,7 @@ class Websocket {
     this.errorCallback = errorCallback;
     this.loginLogoutCallback = () => {};
     this.returnMessages = () => {};
+    this.returnMessage = () => {};
     this.connection = new WebSocket(SERVER);
     this.openStatus = false;
     this.messages = [];
@@ -28,10 +40,43 @@ class Websocket {
     this.addListeners();
   }
 
+  private processWaitingMessage(waiter: WaitingMessages, data: Message) {
+    if (data.type === 'ERROR') {
+      if (data.payload.error) {
+        waiter.callback(data.payload.error ?? '');
+      }
+    } else {
+      if (data.type === 'USER_ACTIVE' || data.type === 'USER_INACTIVE') {
+        if (data.payload.users) {
+          this.getMessages(data.payload.users);
+        }
+      }
+      if (data.type === 'USER_LOGIN' || data.type === 'USER_LOGOUT') {
+        waiter.callback('OK');
+        return;
+      }
+      waiter.callback(JSON.stringify(data.payload));
+    }
+  }
+
   private processMessage(data: Message) {
     if (data.type === 'USER_EXTERNAL_LOGOUT' || data.type === 'USER_EXTERNAL_LOGIN') {
       if (data.payload.user) {
         this.loginLogoutCallback(data.payload.user);
+        return;
+      }
+    }
+    if (data.type === 'MSG_SEND') {
+      if (data.payload.message) {
+        console.log(this.returnMessage);
+        this.returnMessage(data.payload.message);
+        return;
+      }
+    }
+    if (data.type === 'MSG_FROM_USER') {
+      if (data.payload.messages) {
+        this.returnMessages(data.payload.messages);
+        return;
       }
     }
     this.messages.push(data);
@@ -54,14 +99,7 @@ class Websocket {
       const data = JSON.parse(event.data);
       const waiter = this.waiting.find((element) => element.id === data.id);
       if (waiter) {
-        if (data.type === 'ERROR') {
-          waiter.callback(data.payload.error);
-        } else {
-          if (data.type === 'USER_ACTIVE' || data.type === 'USER_INACTIVE') {
-            this.getMessages(data.payload.users);
-          }
-          waiter.callback('OK', JSON.stringify(data.payload));
-        }
+        this.processWaitingMessage(waiter, data);
       } else {
         this.processMessage(data);
       }
@@ -71,6 +109,7 @@ class Websocket {
   public setCallbacks(callbacks: Callbacks) {
     this.loginLogoutCallback = callbacks.loginLogoutCallback;
     this.returnMessages = callbacks.returnMessages;
+    this.returnMessage = callbacks.returnMessage;
   }
 
   private waitResult(id: string, returnMessage: ReturnResult) {
@@ -92,7 +131,7 @@ class Websocket {
     }, 1000);
   }
 
-  private sendMessage(type: string, payload: PayloadRequest, returnMessage: ReturnResult) {
+  private sendMessage(type: string, payload: PayloadRequest, returnMessage?: ReturnResult) {
     if (!this.openStatus) {
       return;
     }
@@ -103,7 +142,9 @@ class Websocket {
       payload
     };
     this.connection.send(JSON.stringify(msg));
-    this.waitResult(id, returnMessage);
+    if (returnMessage) {
+      this.waitResult(id, returnMessage);
+    }
   }
 
   public logoutUser(user: UserData, returnMessage: ReturnResult) {
@@ -138,8 +179,18 @@ class Websocket {
           login: item.login
         }
       };
-      this.sendMessage('MSG_FROM_USER', payload, this.returnMessages);
+      this.sendMessage('MSG_FROM_USER', payload);
     });
+  }
+
+  public sendMessageToUser(login: string, text: string) {
+    const payload = {
+      message: {
+        to: login,
+        text
+      }
+    };
+    this.sendMessage('MSG_SEND', payload);
   }
 }
 

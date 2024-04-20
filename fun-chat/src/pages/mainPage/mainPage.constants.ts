@@ -11,6 +11,7 @@ const MAIN_PAGE_CLASS_NAMES = {
   userListUser: 'userList_user',
   userListLogined: 'userList_user-logined',
   userListHide: 'userList_user-hide',
+  unreadCount: 'userList_unreadCount',
   label: 'mainPage_label',
   button: 'mainPage_button',
   footer: 'mainPage_footer',

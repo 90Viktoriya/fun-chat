@@ -1,16 +1,84 @@
 .dialog_wrapper {
+  display: flex;
+  flex-direction: column;
   width: 70%;
   height: 100%;
   padding: 0 2%;
 }
 .dialog_header {
   height: 10%;
+  border-bottom: 1px solid var(--dark-pink);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.user_online {
+  color: var(--active);
+}
+.user_offline {
+  color: var(--inactive);
 }
 .dialog_mainPart {
+  box-sizing: border-box;
+  width: 100%;
   height: 80%;
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  align-items: center;
-  justify-content: center;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+.dialog_message_wrapper{
+  font-size: 0.8em;
+  width: 70%;
+  max-width: 70%;
+  align-self: start;
+  border: 1px solid var(--dark-pink);
+  border-radius: 8px;
+  margin: 0.5%;
+}
+.dialog_message_header{
+  display: flex;
+  flex-direction: row;
+  text-align: start;
+  background-color: var(--pink);
+}
+.dialog_message_header-user{
+  padding-left: 1%;
+  width: 40%;
+}
+.dialog_message_header-time{
+  text-align: center;
+  width: 60%;
+}
+.dialog_message_wrapper-self{
+  align-self: end;
+}
+.line_divided{
+  font-size: 1em;
+  color: var(--dark-pink);
+  width: 100%;
+  border-top: 2px solid var(--dark-pink);
+}
+.dialog_message_text{
+  background-color: var(--light-pink);
+  text-align: start;
+  padding: 2%;
+  overflow-wrap: break-word;
+}
+.dialog_message_footer{
+  font-size: 12px;
+  background-color: var(--light);
+  display: flex;
+  flex-direction: row;
+}
+.message_edited{
+  width: 50%;
+}
+.message_status{
+  width: 50%;
 }
 .dialog_sendPart {
   width: 100%;
@@ -20,6 +88,9 @@
 }
 .dialog_message-input {
   width: 70%;
+}
+.dialog_message-input-disable {
+  pointer-events: none;
 }
 .dialog_button {
   width: 28%;
@@ -39,3 +110,13 @@ form:invalid .dialog_button{
   color: var(--light-brown);
 }
 
+@media all and (max-width: 600px) {
+  .dialog_message_wrapper{
+    font-size: 0.9em;
+  }
+}
+@media all and (max-width: 500px) {
+  .dialog_message_wrapper{
+    font-size: 1em;
+  }
+}

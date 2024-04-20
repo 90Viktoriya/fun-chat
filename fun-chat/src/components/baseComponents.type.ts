@@ -5,6 +5,7 @@ export type Props = {
   type?: string;
   id?: string;
   placeholder?: string;
+  isLogined?: boolean;
   onclick?(e?: MouseEvent): void;
   onkeydown?(e?: KeyboardEvent): void;
   onkeyup?(): void;

@@ -89,15 +89,32 @@
 }
 
 .userList_user {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   white-space: nowrap;
   color: var(--inactive);
-  padding-left: -10px;
+  position: relative;
+}
+.userList_user:hover {
+  cursor: pointer;
 }
 .userList_user-logined {
   color: var(--active);
 }
 .userList_user-hide {
   display: none;
+}
+.userList_unreadCount{
+  position: absolute;
+  background-color: var(--dark-pink);
+  color: var(--light);
+  right: 5px;
+  padding: 0.5%;
+  align-self: flex-end;
+  font-size: 0.7em;
+  border: 1px solid var(--dark-pink);
+  border-radius: 5px;
 }
 
 .mainPage_footer {

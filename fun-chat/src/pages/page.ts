@@ -63,7 +63,8 @@ class PageController {
       this.user = store.getUserData();
       this.currentPage = new MainPage(
         () => this.logoutUser(),
-        () => this.showAbout()
+        () => this.showAbout(),
+        this.connection
       );
       this.mainPage = this.currentPage;
       this.currentPageType = 'main';
@@ -204,16 +205,16 @@ class PageController {
     if (page === 'main') {
       this.currentPage = new MainPage(
         () => this.logoutUser(),
-        () => this.showAbout()
+        () => this.showAbout(),
+        this.connection
       );
       this.mainPage = this.currentPage;
       if (this.connection.openStatus) {
-        this.connection.getUsers((status: string, result?: string) =>
-          this.mainPage?.loadUserList(status, result ?? '')
-        );
+        this.connection.getUsers((result: string) => this.mainPage?.loadUserList(result));
         this.connection.setCallbacks({
           loginLogoutCallback: this.mainPage.updateUserList.bind(this.mainPage),
-          returnMessages: this.mainPage.processMessages.bind(this.mainPage)
+          returnMessages: this.mainPage.processMessages.bind(this.mainPage),
+          returnMessage: this.mainPage.processMessage.bind(this.mainPage)
         });
       }
     }
