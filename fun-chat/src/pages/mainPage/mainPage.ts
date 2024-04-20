@@ -26,22 +26,24 @@ class MainPage {
       new BaseComponent({ textContent: 'FUN CHAT', className: CLASS_NAMES.title }),
       new BaseComponent(
         { className: CLASS_NAMES.userData },
-        new BaseComponent({ textContent: 'User:', className: CLASS_NAMES.label }),
-        new BaseComponent({ textContent: store.getUserData().name, className: 'mainPage_inputWrapper' }),
-        new BaseComponent({
-          textContent: 'Logout',
-          className: CLASS_NAMES.button,
-          onclick: () => {
-            logoutUser();
-          }
-        }),
-        new BaseComponent({
-          textContent: 'About',
-          className: CLASS_NAMES.button,
-          onclick: () => {
-            showAbout();
-          }
-        })
+        new BaseComponent({ textContent: `User: ${store.getUserData().name}`, className: CLASS_NAMES.label }),
+        new BaseComponent(
+          { className: CLASS_NAMES.buttonsWrapper },
+          new BaseComponent({
+            textContent: 'Logout',
+            className: CLASS_NAMES.button,
+            onclick: () => {
+              logoutUser();
+            }
+          }),
+          new BaseComponent({
+            textContent: 'About',
+            className: CLASS_NAMES.button,
+            onclick: () => {
+              showAbout();
+            }
+          })
+        )
       )
     );
     this.searchInput = new BaseComponent({
@@ -51,7 +53,7 @@ class MainPage {
       placeholder: 'Search...',
       onkeyup: () => this.filterUserList()
     });
-    this.userList = new BaseComponent({ className: CLASS_NAMES.userList });
+    this.userList = new BaseComponent({ tag: 'lu', className: CLASS_NAMES.userList });
     const userListWrapper = new BaseComponent(
       { className: CLASS_NAMES.userListWrapper },
       this.searchInput,
@@ -76,7 +78,7 @@ class MainPage {
         tag: 'li',
         id: user.login,
         className,
-        textContent: user.login,
+        textContent: `● ${user.login}`,
         onclick: (event) => {
           if (event?.currentTarget instanceof HTMLElement) {
             this.dialog.loadDialog(event?.currentTarget.id);

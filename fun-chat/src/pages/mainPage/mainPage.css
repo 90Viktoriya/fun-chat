@@ -1,6 +1,6 @@
 .mainPage_wrapper {
   box-sizing: border-box;
-  width: 70%;
+  width: 95%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,15 +10,18 @@
   height: 100svh;
 }
 .mainPage_header {
+  box-sizing: border-box;
+  font-size: 1.5em;
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   border: 1px solid var(--dark-pink);
   border-radius: 20px;
   margin: 0 auto;
-  padding: 2%;
+  padding: 0.5%;
   height: 15svh;
+  min-height: 100px;
 }
 .mainPage_header-title {
   align-self: center;
@@ -27,8 +30,17 @@
   width: 100%;
   display: flex;
   flex-direction: row;
-  align-self: flex-start;
+  justify-content: space-between;
   gap: 10px;
+}
+.mainPage_label {
+  white-space: nowrap;
+  overflow-y: hidden;
+}
+.mainPage_button-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
 }
 .mainPage_button {
   width: 4em;
@@ -44,9 +56,12 @@
 }
 .mainPart_wrapper {
   box-sizing: border-box;
+  border: 1px solid var(--dark-pink);
+  border-radius: 20px;
+  margin-top: 1%;
   width: 100%;
-  height: 70svh;
-  padding: 2%;
+  height: 75svh;
+  padding: 2% 0;
   display: flex;
   flex-direction: row;
 }
@@ -54,9 +69,9 @@
 .userList_wrapper {
   display: flex;
   flex-direction: column;
-  height: 95%;
+  height: 100%;
   width: 30%;
-  padding: 2%;
+  padding: 0 2%;
   border-right: 1px solid var(--dark-pink);
 }
 .userList_input {
@@ -68,11 +83,15 @@
   margin-top: 2%;
   flex-direction: column;
   overflow-y: scroll;
+  overflow-x: hidden;
+  list-style: none;
   scrollbar-width: thin;
 }
 
 .userList_user {
+  white-space: nowrap;
   color: var(--inactive);
+  padding-left: -10px;
 }
 .userList_user-logined {
   color: var(--active);
@@ -82,7 +101,7 @@
 }
 
 .mainPage_footer {
-  height: 10svh;
+  height: 9svh;
   margin: 0 auto;
   display: flex;
   flex-direction: row;
@@ -104,15 +123,40 @@
 
 @media all and (max-width: 850px) {
   .mainPage_wrapper{
-    width: 90%;
+    width: 100%;
   }
 }
-@media all and (max-width: 550px) {
-  .mainPage_footer{
-    width: 90%;
-    max-width: 90%;
-  }
+
+@media all and (max-width: 900px) {
   .mainPage_wrapper{
     font-size: 20px;
+  }
+}
+
+
+@media all and (max-width: 600px) {
+  .mainPage_footer{
+    width: 90%;
+    max-width: unset;
+    font-size: 0.9em;
+  }
+  .mainPage_wrapper{
+    font-size: 16px;
+
+  }
+  .mainPage_header{
+    min-height: unset;
+  }
+}
+
+@media all and (max-width: 500px) {
+  .mainPage_wrapper{
+    font-size: 12px;
+  }
+  .mainPage_header{
+    height: 12svh;
+  }
+  .mainPart_wrapper{
+    height: 75svh;
   }
 }

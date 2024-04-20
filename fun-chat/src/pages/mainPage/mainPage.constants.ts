@@ -3,6 +3,7 @@ const MAIN_PAGE_CLASS_NAMES = {
   header: 'mainPage_header',
   userData: 'mainPage_header-userData',
   title: 'mainPage_header-title',
+  buttonsWrapper: 'mainPage_button-wrapper',
   mainPart: 'mainPart_wrapper',
   userListWrapper: 'userList_wrapper',
   userListInput: 'userList_input',

@@ -1,6 +1,7 @@
 .dialog_wrapper {
   width: 70%;
   height: 100%;
+  padding: 0 2%;
 }
 .dialog_header {
   height: 10%;
@@ -18,7 +19,6 @@
   flex-direction: row;
 }
 .dialog_message-input {
-  margin: 1%;
   width: 70%;
 }
 .dialog_button {
