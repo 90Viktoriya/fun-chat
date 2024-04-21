@@ -1,4 +1,4 @@
-const DIALOG_CLASS_NAMES = {
+export const DIALOG_CLASS_NAMES = {
   wrapper: 'dialog_wrapper',
   header: 'dialog_header',
   online: 'user_online',
@@ -20,4 +20,8 @@ const DIALOG_CLASS_NAMES = {
   messageStatus: 'message_status'
 };
 
-export default DIALOG_CLASS_NAMES;
+export const ID = {
+  deliveredStatus: 1,
+  footer: 2,
+  separateLine: 'separateLine'
+};

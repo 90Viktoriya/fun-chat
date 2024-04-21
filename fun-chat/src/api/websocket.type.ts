@@ -20,15 +20,21 @@ export type MessageResponse = {
   text: string;
   datetime: number;
   status: {
-    isDelivered: boolean;
-    isReaded: boolean;
-    isEdited: boolean;
+    isDelivered?: boolean;
+    isReaded?: boolean;
+    isEdited?: boolean;
   };
+};
+
+export type MessageStatus = Pick<MessageResponse, 'id' | 'status'>;
+export type MessageStatusRequest = {
+  id: string;
 };
 
 export type ReturnResult = (message: string) => void;
 export type ReturnMessage = (message: MessageResponse) => void;
 export type ReturnMessages = (messages: MessageResponse[]) => void;
+export type ChangeStatus = (message: MessageStatus) => void;
 
 export type WaitingMessages = {
   id: string;
@@ -39,6 +45,7 @@ export type Callbacks = {
   loginLogoutCallback: (user: UserResponse) => void;
   returnMessages: ReturnMessages;
   returnMessage: ReturnMessage;
+  changeStatus: ChangeStatus;
 };
 
 export type PayloadResponse = {
@@ -51,7 +58,7 @@ export type PayloadResponse = {
 
 export type PayloadRequest = {
   user?: UserRequest;
-  message?: MessageRequest;
+  message?: MessageRequest | MessageStatusRequest;
 } | null;
 
 export type Message = {

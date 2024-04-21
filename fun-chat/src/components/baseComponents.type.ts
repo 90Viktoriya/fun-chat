@@ -8,9 +8,12 @@ export type Props = {
   isLogined?: boolean;
   onclick?(e?: MouseEvent): void;
   onkeydown?(e?: KeyboardEvent): void;
+  onwheel?(): void;
   onkeyup?(): void;
   required?: string;
+  pattern?: string;
   src?: string;
   alt?: string;
   href?: string;
+  name?: string;
 };

@@ -68,14 +68,15 @@ class BaseComponent {
     return this.node.lastElementChild;
   }
 
-  /*  public removeLastChildren() {
-    if (this.node.children.length > 1) {
-      this.node.lastChild?.remove();
-    }
-  } */
-
   public getChildrenById(id: string) {
     return this.node.children.namedItem(id);
+  }
+
+  public removeChild(node: HTMLElement) {
+    if (this.node.children.namedItem(node.id)) {
+      console.log(this.node.children);
+      this.node.removeChild(node);
+    }
   }
 
   public getChildren() {

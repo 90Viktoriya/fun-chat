@@ -214,7 +214,8 @@ class PageController {
         this.connection.setCallbacks({
           loginLogoutCallback: this.mainPage.updateUserList.bind(this.mainPage),
           returnMessages: this.mainPage.processMessages.bind(this.mainPage),
-          returnMessage: this.mainPage.processMessage.bind(this.mainPage)
+          returnMessage: this.mainPage.processMessage.bind(this.mainPage),
+          changeStatus: this.mainPage.changeStatus.bind(this.mainPage)
         });
       }
     }

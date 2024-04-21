@@ -8,7 +8,8 @@ import type {
   UserResponse,
   Callbacks,
   ReturnMessage,
-  ReturnMessages
+  ReturnMessages,
+  ChangeStatus
 } from './websocket.type';
 
 class Websocket {
@@ -22,6 +23,8 @@ class Websocket {
 
   returnMessage: ReturnMessage;
 
+  changeStatus: ChangeStatus;
+
   messages: Message[];
 
   waiting: WaitingMessages[];
@@ -33,6 +36,7 @@ class Websocket {
     this.loginLogoutCallback = () => {};
     this.returnMessages = () => {};
     this.returnMessage = () => {};
+    this.changeStatus = () => {};
     this.connection = new WebSocket(SERVER);
     this.openStatus = false;
     this.messages = [];
@@ -68,7 +72,6 @@ class Websocket {
     }
     if (data.type === 'MSG_SEND') {
       if (data.payload.message) {
-        console.log(this.returnMessage);
         this.returnMessage(data.payload.message);
         return;
       }
@@ -79,7 +82,22 @@ class Websocket {
         return;
       }
     }
+    if (data.type === 'MSG_DELIVER' || data.type === 'MSG_READ') {
+      if (data.payload.message) {
+        this.changeStatus(data.payload.message);
+      }
+    }
     this.messages.push(data);
+    console.log(this.messages);
+  }
+
+  public markRead(id: string) {
+    const payload = {
+      message: {
+        id
+      }
+    };
+    this.sendMessage('MSG_READ', payload);
   }
 
   private addListeners() {
@@ -110,6 +128,7 @@ class Websocket {
     this.loginLogoutCallback = callbacks.loginLogoutCallback;
     this.returnMessages = callbacks.returnMessages;
     this.returnMessage = callbacks.returnMessage;
+    this.changeStatus = callbacks.changeStatus;
   }
 
   private waitResult(id: string, returnMessage: ReturnResult) {
