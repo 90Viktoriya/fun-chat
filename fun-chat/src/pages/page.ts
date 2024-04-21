@@ -215,7 +215,9 @@ class PageController {
           loginLogoutCallback: this.mainPage.updateUserList.bind(this.mainPage),
           returnMessages: this.mainPage.processMessages.bind(this.mainPage),
           returnMessage: this.mainPage.processMessage.bind(this.mainPage),
-          changeStatus: this.mainPage.changeStatus.bind(this.mainPage)
+          changeStatus: this.mainPage.changeStatus.bind(this.mainPage),
+          changeMessage: this.mainPage.changeMessage.bind(this.mainPage),
+          deleteMessage: this.mainPage.deleteMessage.bind(this.mainPage)
         });
       }
     }

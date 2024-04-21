@@ -10,10 +10,13 @@ export type Props = {
   onkeydown?(e?: KeyboardEvent): void;
   onwheel?(): void;
   onkeyup?(): void;
+  oncontextmenu?(e?: MouseEvent): void;
   required?: string;
   pattern?: string;
+  value?: string;
   src?: string;
   alt?: string;
   href?: string;
   name?: string;
+  style?: string;
 };

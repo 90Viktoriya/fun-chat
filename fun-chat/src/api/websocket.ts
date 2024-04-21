@@ -9,7 +9,9 @@ import type {
   Callbacks,
   ReturnMessage,
   ReturnMessages,
-  ChangeStatus
+  ChangeStatus,
+  DeleteMessage,
+  ChangeMessage
 } from './websocket.type';
 
 class Websocket {
@@ -25,6 +27,10 @@ class Websocket {
 
   changeStatus: ChangeStatus;
 
+  deleteMessageCallback: DeleteMessage;
+
+  changeMessage: ChangeMessage;
+
   messages: Message[];
 
   waiting: WaitingMessages[];
@@ -37,6 +43,8 @@ class Websocket {
     this.returnMessages = () => {};
     this.returnMessage = () => {};
     this.changeStatus = () => {};
+    this.deleteMessageCallback = () => {};
+    this.changeMessage = () => {};
     this.connection = new WebSocket(SERVER);
     this.openStatus = false;
     this.messages = [];
@@ -87,8 +95,19 @@ class Websocket {
         this.changeStatus(data.payload.message);
       }
     }
+    if (data.type === 'MSG_EDIT') {
+      if (data.payload.message) {
+        this.changeMessage(data.payload.message);
+      }
+    }
+    if (data.type === 'MSG_DELETE') {
+      if (data.payload.message) {
+        if (data.payload.message.status.isDeleted) {
+          this.deleteMessageCallback(data.payload.message.id);
+        }
+      }
+    }
     this.messages.push(data);
-    console.log(this.messages);
   }
 
   public markRead(id: string) {
@@ -129,6 +148,8 @@ class Websocket {
     this.returnMessages = callbacks.returnMessages;
     this.returnMessage = callbacks.returnMessage;
     this.changeStatus = callbacks.changeStatus;
+    this.changeMessage = callbacks.changeMessage;
+    this.deleteMessageCallback = callbacks.deleteMessage;
   }
 
   private waitResult(id: string, returnMessage: ReturnResult) {
@@ -210,6 +231,25 @@ class Websocket {
       }
     };
     this.sendMessage('MSG_SEND', payload);
+  }
+
+  public editMessage(id: string, text: string) {
+    const payload = {
+      message: {
+        id,
+        text
+      }
+    };
+    this.sendMessage('MSG_EDIT', payload);
+  }
+
+  public deleteMessage(id: string) {
+    const payload = {
+      message: {
+        id
+      }
+    };
+    this.sendMessage('MSG_DELETE', payload);
   }
 }
 

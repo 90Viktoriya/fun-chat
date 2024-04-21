@@ -4,7 +4,7 @@ import FOOTER from './footerBlock';
 import store from '../../store/store';
 import CLASS_NAMES from './mainPage.constants';
 import type { PageType } from '../pages.types';
-import type { MessageResponse, MessageStatus, UserResponse } from '../../api/websocket.type';
+import type { MessageChanged, MessageResponse, MessageStatus, UserResponse } from '../../api/websocket.type';
 import Dialog from '../../features/dialogBlock/dialogBlock';
 import type Websocket from '../../api/websocket';
 
@@ -106,14 +106,11 @@ class MainPage {
 
   public updateCountUnread(login: string, count: number) {
     const user = this.userList.getChildrenById(login);
-    console.log(count);
-    console.log(user?.children);
     if (user?.children.length) {
       if (user?.children.length > 0) {
         user?.lastChild?.remove();
       }
     }
-    console.log(user?.children);
     if (count > 0) {
       user?.append(
         new BaseComponent({
@@ -127,23 +124,27 @@ class MainPage {
 
   public processMessage(message: MessageResponse) {
     const unreadMessage = this.dialog.getMessage(message);
-    console.log(unreadMessage);
     if (unreadMessage.count > 0) {
       this.updateCountUnread(unreadMessage.login, unreadMessage.count);
     }
   }
 
   public processMessages(messages: MessageResponse[]) {
-    console.log(messages);
     const unreadMessage = this.dialog.getMessages(messages);
-    console.log(unreadMessage);
     if (unreadMessage.count > 0) {
       this.setUnreadMessage(unreadMessage.login, unreadMessage.count);
     }
   }
 
+  public deleteMessage(id: string) {
+    this.dialog.deleteMessage(id);
+  }
+
+  public changeMessage(message: MessageChanged) {
+    this.dialog.updateMessage(message);
+  }
+
   public changeStatus(message: MessageStatus) {
-    console.log('change');
     this.dialog.changeStatus(message);
   }
 

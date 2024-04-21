@@ -29,6 +29,7 @@
   overflow-y: scroll;
   overflow-x: hidden;
   scrollbar-width: thin;
+  position: relative;
 }
 .dialog_message_wrapper{
   font-size: 0.8em;
@@ -68,6 +69,7 @@
   padding: 2%;
   overflow-wrap: break-word;
 }
+
 .dialog_message_footer{
   font-size: 12px;
   background-color: var(--light);
@@ -109,7 +111,18 @@ form:invalid .dialog_button{
   opacity: 60%;
   color: var(--light-brown);
 }
-
+.context_menu_wrapper {
+ position: absolute;
+ width: 100%;
+ max-width: 200px;
+ background-color: var(--light-pink);
+ align-self: center;
+ border: 1px solid var(--dark-pink);
+}
+.context_menu_btn:hover {
+  background-color: var(--pink);
+  cursor: pointer;
+}
 @media all and (max-width: 600px) {
   .dialog_message_wrapper{
     font-size: 0.9em;

@@ -2,9 +2,9 @@ import type Websocket from '../../api/websocket';
 import BaseComponent from '../../components/baseComponent';
 import { DIALOG_CLASS_NAMES as CLASS_NAMES, ID } from './dialogBlock.constants';
 import './dialogBlock.css';
-import type { MessageResponse, MessageStatus } from '../../api/websocket.type';
+import type { MessageChanged, MessageResponse, MessageStatus } from '../../api/websocket.type';
 import type { Status, UpdateCountUnread } from './dialogBlock.type';
-import { displayStatus, setCountUnread, deleteMessage } from './dialog.Block.helper';
+import { displayStatus, setCountUnread, deleteMessage, deleteMessageFromData, updateData } from './dialog.Block.helper';
 
 class Dialog {
   connection;
@@ -25,6 +25,8 @@ class Dialog {
 
   userSelected;
 
+  selectedMessage;
+
   mainPart;
 
   separateLine;
@@ -38,6 +40,7 @@ class Dialog {
   constructor(login: string, connection: Websocket, updateCountUnread: UpdateCountUnread) {
     this.connection = connection;
     this.userLogin = login;
+    this.selectedMessage = '';
     this.updateCountUnread = updateCountUnread;
     this.messageInput = new BaseComponent({
       tag: 'input',
@@ -101,6 +104,7 @@ class Dialog {
   }
 
   private markAsRead() {
+    this.hideContextMenu();
     this.mainPart.removeChild(this.separateLine.node);
     const messages = this.unreadMessageToThis.get(this.userSelected);
     messages?.forEach((item) => {
@@ -110,12 +114,101 @@ class Dialog {
     this.updateCountUnread(this.userSelected, 0);
   }
 
+  private deleteMessageInit(id: string) {
+    const element = this.mainPart.getChildrenById(id);
+    if (element instanceof HTMLElement) {
+      this.connection.deleteMessage(id);
+    }
+  }
+
+  public deleteMessage(id: string) {
+    const element = this.mainPart.getChildrenById(id);
+    const login = deleteMessageFromData(this.data, id);
+    if (login === this.userLogin) {
+      deleteMessage(this.unreadMessageFromThis, login, id);
+    } else if (deleteMessage(this.unreadMessageToThis, login, id)) {
+      this.updateCountUnread(login, this.unreadMessageToThis.get(login)?.length ?? 0);
+    }
+    element?.remove();
+  }
+
+  public updateMessage(message: MessageChanged) {
+    console.log('change');
+    console.log(message);
+    const messageElement = this.mainPart.getChildrenById(message.id);
+    const textElement = messageElement?.children.item(ID.messageText);
+    if (textElement instanceof HTMLElement) {
+      textElement.textContent = message.text;
+    }
+    const footer = messageElement?.children.item(ID.footer);
+    if (footer instanceof HTMLElement) {
+      const status = footer.children.item(ID.editedStatus);
+      if (status instanceof HTMLElement) {
+        status.textContent = 'edited';
+      }
+    }
+    updateData(this.data, message.id, message.text);
+  }
+
+  private editMessage(id: string) {
+    const element = this.mainPart.getChildrenById(id);
+    console.log(id);
+    console.log(element);
+    console.log(element instanceof HTMLElement);
+    if (element instanceof HTMLElement) {
+      const input = this.messageInput.getNode();
+      if (input instanceof HTMLInputElement) {
+        this.selectedMessage = id;
+        input.name = id;
+        input.value = element.children.item(ID.messageText)?.textContent ?? '';
+      }
+    }
+  }
+
+  private hideContextMenu() {
+    this.selectedMessage = '';
+    const element = this.mainPart.getChildrenById(ID.contextMenu);
+    if (element instanceof HTMLElement) {
+      this.mainPart.removeChild(element);
+    }
+  }
+
+  private showContextMenu(event: MouseEvent) {
+    let top = 0;
+    if (event.currentTarget instanceof HTMLElement) {
+      top = event.currentTarget.offsetTop + event.currentTarget.offsetHeight / 2;
+      this.selectedMessage = event.currentTarget.id;
+    }
+    this.mainPart.append(
+      new BaseComponent(
+        { id: ID.contextMenu, className: CLASS_NAMES.contextMenuWrapper, style: `top: ${top}px` },
+        new BaseComponent({
+          className: CLASS_NAMES.contextMenuDelete,
+          textContent: 'Delete',
+          onclick: () => {
+            this.deleteMessageInit(this.selectedMessage);
+          }
+        }),
+        new BaseComponent({
+          className: CLASS_NAMES.contextMenuEdit,
+          textContent: 'Edit',
+          onclick: () => {
+            this.editMessage(this.selectedMessage);
+          }
+        })
+      )
+    );
+  }
+
   private showMessage(message: MessageResponse) {
     let className = '';
     let status: Status = '';
     let editedStatus = '';
+    let contextMenu: (event?: MouseEvent) => void = () => {
+      this.hideContextMenu();
+    };
     if (message.status.isEdited) {
-      editedStatus = '';
+      editedStatus = 'edited';
     }
     if (message.from === this.userLogin) {
       if (message.status.isReaded) {
@@ -126,11 +219,22 @@ class Dialog {
         status = 'send';
       }
       className = `${CLASS_NAMES.messageWrapper} ${CLASS_NAMES.messageWrapperSelf}`;
+      contextMenu = (event?: MouseEvent) => {
+        if (event) {
+          event?.preventDefault();
+          this.hideContextMenu();
+          this.showContextMenu(event);
+        }
+      };
     } else {
       className = CLASS_NAMES.messageWrapper;
     }
     const wrapper = new BaseComponent(
-      { className, id: message.id },
+      {
+        className,
+        id: message.id,
+        oncontextmenu: contextMenu
+      },
       new BaseComponent(
         { className: CLASS_NAMES.messageHeader },
         new BaseComponent({ className: CLASS_NAMES.messageHeaderUser, textContent: message.from }),
@@ -227,7 +331,13 @@ class Dialog {
   private sendMessage() {
     const node = this.messageInput.getNode();
     if (node instanceof HTMLInputElement) {
-      this.connection.sendMessageToUser(this.userSelected, node.value);
+      if (node.name) {
+        this.connection.editMessage(node.name, node.value);
+        this.selectedMessage = '';
+        node.name = '';
+      } else {
+        this.connection.sendMessageToUser(this.userSelected, node.value);
+      }
       node.value = '';
     }
   }

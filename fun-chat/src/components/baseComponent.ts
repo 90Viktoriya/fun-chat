@@ -74,7 +74,6 @@ class BaseComponent {
 
   public removeChild(node: HTMLElement) {
     if (this.node.children.namedItem(node.id)) {
-      console.log(this.node.children);
       this.node.removeChild(node);
     }
   }

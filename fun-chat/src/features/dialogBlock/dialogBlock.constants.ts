@@ -17,11 +17,17 @@ export const DIALOG_CLASS_NAMES = {
   messageText: 'dialog_message_text',
   messageFooter: 'dialog_message_footer',
   messageEdited: 'message_edited',
-  messageStatus: 'message_status'
+  messageStatus: 'message_status',
+  contextMenuWrapper: 'context_menu_wrapper',
+  contextMenuDelete: 'context_menu_btn context_menu_delete',
+  contextMenuEdit: 'context_menu_btn context_menu_edit'
 };
 
 export const ID = {
   deliveredStatus: 1,
+  editedStatus: 0,
   footer: 2,
-  separateLine: 'separateLine'
+  separateLine: 'separateLine',
+  contextMenu: 'contextMenu',
+  messageText: 1
 };
