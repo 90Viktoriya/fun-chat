@@ -131,11 +131,34 @@
 }
 .mainPage_github-link {
   text-decoration: none;
+  color: var(--dark);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 .mainPage_github-icon {
-  width: 40px;
-  height: 40px;
-  background-image: src('./img/github-icon.svg');
+  margin-left: 0.2em;
+  width: calc(20px + 0.2em);
+  height: 20px;
+  background-size: contain;
+  background-image: url('../../img/github-icon.svg');
+  background-repeat: no-repeat;
+}
+.mainPage_logo-link{
+  text-decoration: none;
+  color: var(--dark);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.mainPage_logo-icon {
+  margin-left: 0.2em;
+  width: calc(40px + 0.2em);
+  height: 20px;
+  background-size: contain;
+  background-image: url('../../img/rs_school_js.svg');
+  background-repeat: no-repeat;
 }
 
 @media all and (max-width: 850px) {

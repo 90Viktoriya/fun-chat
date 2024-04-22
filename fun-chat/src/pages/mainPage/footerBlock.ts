@@ -13,10 +13,8 @@ const FOOTER = new BaseComponent(
         className: CLASS_NAMES.githubLink
       },
       new BaseComponent({
-        tag: 'img',
-        className: CLASS_NAMES.githubIcon,
-        src: './src/img/github-icon.svg',
-        alt: 'github icon'
+        tag: 'div',
+        className: CLASS_NAMES.githubIcon
       })
     )
   ),
@@ -31,10 +29,8 @@ const FOOTER = new BaseComponent(
         className: CLASS_NAMES.logoLink
       },
       new BaseComponent({
-        tag: 'img',
+        tag: 'div',
         className: CLASS_NAMES.logoIcon,
-        src: './src/img/rs_school_js.svg',
-        alt: 'rs-school icon'
       })
     )
   )
