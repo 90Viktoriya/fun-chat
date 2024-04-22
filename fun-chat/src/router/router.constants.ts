@@ -1,0 +1,3 @@
+const PATH_SEGMENTS_TO_KEEP = 2;
+
+export default PATH_SEGMENTS_TO_KEEP;

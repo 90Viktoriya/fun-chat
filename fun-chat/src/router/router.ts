@@ -1,4 +1,5 @@
 import type { RouterType } from './router.type';
+import PATH_SEGMENTS_TO_KEEP from './router.constants';
 
 class Router {
   routes;
@@ -9,32 +10,23 @@ class Router {
     this.routes = routes;
     this.checkRedirection = checkRedirection;
     document.addEventListener('DOMContentLoaded', () => {
-      this.navigate();
+      this.navigate(
+        window.location.pathname
+          .split('/')
+          .slice(PATH_SEGMENTS_TO_KEEP + 1)
+          .join('/')
+      );
     });
   }
 
-  public navigate(url?: string) {
-    let result = null;
-    if (typeof url === 'undefined') {
-      result = this.checkRedirection(window.location.pathname.slice(1));
-      if (result === null) {
-        window.history.pushState({}, '', window.location.href);
-      } else {
-        window.history.pushState(
-          {},
-          '',
-          `${window.location.href.slice(0, window.location.href.length - window.location.pathname.length)}/${result}`
-        );
-      }
-    } else {
-      window.history.pushState(
-        {},
-        '',
-        `${window.location.href.slice(0, window.location.href.length - window.location.pathname.length)}/${url}`
-      );
+  public navigate(url: string) {
+    const pathParts = window.location.pathname.split('/');
+    let result = this.checkRedirection(url);
+    if (result === null) {
+      result = url;
     }
-
-    const route = this.routes?.find((item) => item.path === window.location.pathname.slice(1));
+    window.history.pushState({}, '', `/${pathParts.slice(1, PATH_SEGMENTS_TO_KEEP + 1).join('/')}/${result}`);
+    const route = this.routes?.find((item) => item.path === result);
     if (typeof route === 'undefined') {
       const error = this.routes?.find((item) => item.path === 'error');
       error?.callback();
