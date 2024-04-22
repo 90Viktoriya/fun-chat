@@ -5,6 +5,14 @@ import './dialogBlock.css';
 import type { MessageChanged, MessageResponse, MessageStatus } from '../../api/websocket.type';
 import type { Status, UpdateCountUnread } from './dialogBlock.type';
 import { displayStatus, setCountUnread, deleteMessage, deleteMessageFromData, updateData } from './dialog.Block.helper';
+import {
+  createInput,
+  createMessageFooter,
+  createSeparateLine,
+  createMessageHeader,
+  createSendArea,
+  createContextMenu
+} from './dialogBlockElementCreator';
 
 class Dialog {
   connection;
@@ -42,54 +50,26 @@ class Dialog {
     this.userLogin = login;
     this.selectedMessage = '';
     this.updateCountUnread = updateCountUnread;
-    this.messageInput = new BaseComponent({
-      tag: 'input',
-      type: 'text',
-      className: `${CLASS_NAMES.messageInput} ${CLASS_NAMES.inputDisable}`,
-      required: '1',
-      pattern: `(\\s*\\S+\\s*){1,}`,
-      placeholder: 'Message...',
-      onkeydown: (event: KeyboardEvent) => {
-        if (event.key === 'Enter') {
-          this.sendMessage();
-        }
-      }
-    });
+    this.messageInput = createInput(() => this.sendMessage());
     this.data = new Map<string, MessageResponse[]>();
     this.usersStatus = new Map<string, boolean>();
     this.unreadMessageToThis = new Map<string, string[]>();
     this.unreadMessageFromThis = new Map<string, string[]>();
     this.userSelected = '';
-    this.separateLine = new BaseComponent({
-      className: CLASS_NAMES.separateLine,
-      textContent: 'New messages',
-      id: ID.separateLine
-    });
+    this.separateLine = createSeparateLine();
     this.header = new BaseComponent({ className: CLASS_NAMES.header });
     this.mainPart = new BaseComponent(
       {
         className: CLASS_NAMES.mainPart,
-        onclick: () => {
-          this.markAsRead();
-        },
-        onwheel: () => {
-          this.markAsRead();
-        }
+        onclick: () => this.markAsRead(),
+        onwheel: () => this.markAsRead()
       },
       new BaseComponent({ textContent: 'Choose user for sending message...' })
     );
-    this.sendArea = new BaseComponent(
-      { tag: 'form', className: CLASS_NAMES.sendPart },
-      this.messageInput,
-      new BaseComponent({
-        textContent: 'Send',
-        className: CLASS_NAMES.button,
-        onclick: () => {
-          this.sendMessage();
-          this.markAsRead();
-        }
-      })
-    );
+    this.sendArea = createSendArea(this.messageInput, () => {
+      this.sendMessage();
+      this.markAsRead();
+    });
     this.wrapper = new BaseComponent({ className: CLASS_NAMES.wrapper }, this.header, this.mainPart, this.sendArea);
   }
 
@@ -133,8 +113,6 @@ class Dialog {
   }
 
   public updateMessage(message: MessageChanged) {
-    console.log('change');
-    console.log(message);
     const messageElement = this.mainPart.getChildrenById(message.id);
     const textElement = messageElement?.children.item(ID.messageText);
     if (textElement instanceof HTMLElement) {
@@ -152,9 +130,6 @@ class Dialog {
 
   private editMessage(id: string) {
     const element = this.mainPart.getChildrenById(id);
-    console.log(id);
-    console.log(element);
-    console.log(element instanceof HTMLElement);
     if (element instanceof HTMLElement) {
       const input = this.messageInput.getNode();
       if (input instanceof HTMLInputElement) {
@@ -180,22 +155,10 @@ class Dialog {
       this.selectedMessage = event.currentTarget.id;
     }
     this.mainPart.append(
-      new BaseComponent(
-        { id: ID.contextMenu, className: CLASS_NAMES.contextMenuWrapper, style: `top: ${top}px` },
-        new BaseComponent({
-          className: CLASS_NAMES.contextMenuDelete,
-          textContent: 'Delete',
-          onclick: () => {
-            this.deleteMessageInit(this.selectedMessage);
-          }
-        }),
-        new BaseComponent({
-          className: CLASS_NAMES.contextMenuEdit,
-          textContent: 'Edit',
-          onclick: () => {
-            this.editMessage(this.selectedMessage);
-          }
-        })
+      createContextMenu(
+        top,
+        () => this.deleteMessageInit(this.selectedMessage),
+        () => this.editMessage(this.selectedMessage)
       )
     );
   }
@@ -204,9 +167,7 @@ class Dialog {
     let className = '';
     let status: Status = '';
     let editedStatus = '';
-    let contextMenu: (event?: MouseEvent) => void = () => {
-      this.hideContextMenu();
-    };
+    let contextMenu: (event?: MouseEvent) => void = () => this.hideContextMenu();
     if (message.status.isEdited) {
       editedStatus = 'edited';
     }
@@ -235,23 +196,9 @@ class Dialog {
         id: message.id,
         oncontextmenu: contextMenu
       },
-      new BaseComponent(
-        { className: CLASS_NAMES.messageHeader },
-        new BaseComponent({ className: CLASS_NAMES.messageHeaderUser, textContent: message.from }),
-        new BaseComponent({
-          className: CLASS_NAMES.messageHeaderTime,
-          textContent: new Date(message.datetime).toLocaleString()
-        })
-      ),
+      createMessageHeader(message.from, message.datetime),
       new BaseComponent({ className: CLASS_NAMES.messageText, textContent: message.text }),
-      new BaseComponent(
-        { className: CLASS_NAMES.messageFooter },
-        new BaseComponent({ className: CLASS_NAMES.messageEdited, textContent: editedStatus }),
-        new BaseComponent({
-          className: CLASS_NAMES.messageStatus,
-          textContent: status
-        })
-      )
+      createMessageFooter(editedStatus, status)
     );
     this.mainPart.append(wrapper);
   }

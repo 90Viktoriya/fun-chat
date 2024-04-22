@@ -43,24 +43,7 @@ class LoginForm {
   form;
 
   constructor(loginUser: (user: UserData) => void, showAbout: () => void) {
-    this.inputComponents = LOGIN_FORMS.map(
-      (component) =>
-        new BaseComponent({
-          tag: 'input',
-          type: component.type,
-          id: component.id,
-          required: '1',
-          className: CLASS_NAMES.input,
-          onkeydown: (event: KeyboardEvent) => {
-            if (event.key === 'Enter') {
-              const user = this.checkInputs();
-              if (user) {
-                loginUser(user);
-              }
-            }
-          }
-        })
-    );
+    this.inputComponents = this.createInputComponents(loginUser);
     this.form = new BaseComponent(
       { tag: 'form', className: CLASS_NAMES.wrapper },
       new BaseComponent({ tag: 'h1', textContent: 'Please login!', className: CLASS_NAMES.header }),
@@ -82,6 +65,27 @@ class LoginForm {
           showAbout();
         }
       })
+    );
+  }
+
+  private createInputComponents(loginUser: (user: UserData) => void) {
+    return LOGIN_FORMS.map(
+      (component) =>
+        new BaseComponent({
+          tag: 'input',
+          type: component.type,
+          id: component.id,
+          required: '1',
+          className: CLASS_NAMES.input,
+          onkeydown: (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+              const user = this.checkInputs();
+              if (user) {
+                loginUser(user);
+              }
+            }
+          }
+        })
     );
   }
 

@@ -60,7 +60,6 @@ export function deleteMessageFromData(array: DataMap, id: string) {
 }
 
 export function deleteMessage(array: MessageMap, login: string, id: string) {
-  console.log(array);
   const messages = array.get(login);
   const index = messages?.indexOf(id) ?? -1;
   messages?.splice(index, 1);

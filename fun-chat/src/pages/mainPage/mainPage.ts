@@ -1,6 +1,7 @@
 import BaseComponent from '../../components/baseComponent';
 import './mainPage.css';
 import FOOTER from './footerBlock';
+import createHeader from './headerBlock';
 import store from '../../store/store';
 import CLASS_NAMES from './mainPage.constants';
 import type { PageType } from '../pages.types';
@@ -22,31 +23,7 @@ class MainPage {
   headerBlock;
 
   constructor(logoutUser: () => void, showAbout: () => void, connection: Websocket) {
-    this.headerBlock = new BaseComponent(
-      { tag: 'section', className: CLASS_NAMES.header },
-      new BaseComponent({ textContent: 'FUN CHAT', className: CLASS_NAMES.title }),
-      new BaseComponent(
-        { className: CLASS_NAMES.userData },
-        new BaseComponent({ textContent: `User: ${store.getUserData().name}`, className: CLASS_NAMES.label }),
-        new BaseComponent(
-          { className: CLASS_NAMES.buttonsWrapper },
-          new BaseComponent({
-            textContent: 'Logout',
-            className: CLASS_NAMES.button,
-            onclick: () => {
-              logoutUser();
-            }
-          }),
-          new BaseComponent({
-            textContent: 'About',
-            className: CLASS_NAMES.button,
-            onclick: () => {
-              showAbout();
-            }
-          })
-        )
-      )
-    );
+    this.headerBlock = createHeader(logoutUser, showAbout);
     this.searchInput = new BaseComponent({
       tag: 'input',
       type: 'text',

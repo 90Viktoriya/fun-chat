@@ -31,8 +31,6 @@ class Websocket {
 
   changeMessage: ChangeMessage;
 
-  messages: Message[];
-
   waiting: WaitingMessages[];
 
   public openStatus;
@@ -47,7 +45,6 @@ class Websocket {
     this.changeMessage = () => {};
     this.connection = new WebSocket(SERVER);
     this.openStatus = false;
-    this.messages = [];
     this.waiting = [];
     this.addListeners();
   }
@@ -107,7 +104,6 @@ class Websocket {
         }
       }
     }
-    this.messages.push(data);
   }
 
   public markRead(id: string) {
@@ -165,7 +161,6 @@ class Websocket {
     setTimeout(() => {
       this.connection = new WebSocket(SERVER);
       this.openStatus = false;
-      this.messages = [];
       this.waiting = [];
       this.addListeners();
     }, 1000);
